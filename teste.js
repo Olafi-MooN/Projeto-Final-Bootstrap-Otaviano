@@ -1,19 +1,5 @@
 let bookmarks = [
-    {
-        id: 0,
-        name: "Desvendado o javascript",
-        link: "https//google.com.br/link"
-    },
-    {
-        id: 1,
-        name: "Desvendado o javascript",
-        link: "https//google.com.br/link"
-    },
-    {
-        id: 2,
-        name: "Desvendado o javascript",
-        link: "https//google.com.br/link"
-    }
+    
 ]
 
 let contadorId = bookmarks.length;
@@ -36,12 +22,17 @@ function updateTable() {
     var table = document.querySelector('.tablejs');
     var itemsForTable = '';
 
+    if (!bookmarks[0]) {
+        return table.innerHTML = '<h3>Nenhum book adicionado</h3>'
+    }
+
     bookmarks.forEach((item, index) => {
         itemsForTable = elementsInTableHTML(index) + itemsForTable;
     });
     table.innerHTML = itemsForTable;
 
     deleteItem();
+    searchIdAlterItem();
 }
 
 function deleteItem() {
@@ -79,26 +70,58 @@ function newItemInTable() {
     contadorId = contadorId + 1;
 }
 
-// Falta fazer o alter table completo
-function alterItemInTable() {
+function searchIdAlterItem() {
     var btnAlter = document.querySelectorAll('.btn-alter');
     btnAlter.forEach((item) => {
         item.addEventListener('click', (e) => {
-            bookmarks.map((value, index) => {
+            document.querySelector('.modal-alter-item').style.display = "flex";
+            bookmarks.forEach((value, index) => {
                 if(Number(e.target.id) === value.id){
-                    // Falta terminar aqui
+                    document.querySelector('.inputId').value = value.id;
                 }
             })
         })
     })
 }
 
+function alterItemIntable() {
+    var inputId = document.querySelector('.inputId').value;
+    var inputDescriptionAlter = document.querySelector('.inputDescriptionAlter').value;
+    var inputLinkAlter = document.querySelector('.inputLinkAlter').value;
+
+    if (inputDescriptionAlter === '' || inputLinkAlter === '') {
+        return alert('Preencha todos os campos')
+    }
+
+    bookmarks.forEach(item => {
+        if (item.id === Number(inputId)) {
+            item.name = inputDescriptionAlter;
+            item.link = inputLinkAlter;
+        }
+    })
+
+    inputDescriptionAlter = '';
+    inputLinkAlter = '';
+
+    document.querySelector('.modal-alter-item').style.display = "none";
+}
+
 window.addEventListener("load", () => {
     updateTable();   
 });
 
-// Permite adicionar um elemento no tabala e no array bookmarks
+// Permite adicionar um elemento da tabela e no array bookmarks
 document.querySelector('.btnAdd').addEventListener("click", () => {
     newItemInTable();
     updateTable();
 });
+
+// Permite Alterar um elemento da tabela e no array bookmarks
+document.querySelector('.btnAlter').addEventListener("click", () => {
+    alterItemIntable();
+    updateTable();
+});
+
+document.querySelector('.close-modal').addEventListener('click', () => {
+    document.querySelector('.modal-alter-item').style.display = "none";
+})
